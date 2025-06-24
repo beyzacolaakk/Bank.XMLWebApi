@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="ArrayOfTransaction">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Transaction" type="TransactionType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="TransactionType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int"/>
+
+			<xs:element name="SenderAccountId" type="xs:int" minOccurs="0" nillable="true"/>
+			<xs:element name="ReceiverAccountId" type="xs:int" minOccurs="0" nillable="true"/>
+			<xs:element name="CardId" type="xs:int" minOccurs="0" nillable="true"/>
+
+			<xs:element name="Amount" type="xs:decimal"/>
+
+			<xs:element name="CurrentBalance" type="xs:decimal" minOccurs="0" nillable="true"/>
+
+			<xs:element name="TransactionType" type="xs:string"/>
+			<xs:element name="Status" type="xs:string"/>
+
+			<xs:element name="Description" type="xs:string" minOccurs="0"/>
+
+			<xs:element name="TransactionDate" type="xs:dateTime"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

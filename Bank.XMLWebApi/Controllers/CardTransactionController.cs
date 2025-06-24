@@ -1,0 +1,112 @@
+﻿using Bank.Business.Abstract;
+using Bank.Core.Extensions;
+using Bank.Core.Utilities.XMLSerializeToXML;
+using Bank.Entity.Concrete;
+using Bank.Entity.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Bank.XMLWebApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CardTransactionController : BaseController
+    {
+        private readonly ICardTransactionService _cardTransactionService;
+
+        public CardTransactionController(ICardTransactionService cardTransactionService)
+        {
+            _cardTransactionService = cardTransactionService;
+        }
+
+        [HttpGet("getall/xml")]
+        public async Task<IActionResult> GetAll() 
+        {
+            var result = await _cardTransactionService.GetAll();
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            string xmlString = XmlHelper.SerializeToXml(result.Data);
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "CardTransaction.xsd");
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
+
+            return Content(xmlString, "application/xml");
+        }
+
+        [Authorize(Roles = "Customer,Administrator")]
+        [HttpGet("getbyid/{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var result = await Task.Run(() => _cardTransactionService.GetById(id));
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Customer,Administrator")]
+        [HttpPost("add")]
+        public async Task<IActionResult> Add([FromBody] CardTransaction cardTransaction)
+        {
+            var result = await Task.Run(() => _cardTransactionService.Add(cardTransaction));
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Customer,Administrator")]
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromBody] CardTransaction cardTransaction)
+        {
+            var result = await Task.Run(() => _cardTransactionService.Update(cardTransaction));
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Customer,Administrator")]
+        [HttpDelete("delete")]
+        public async Task<IActionResult> Delete([FromBody] CardTransaction cardTransaction)
+        {
+            var result = await Task.Run(() => _cardTransactionService.Delete(cardTransaction));
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Customer,Administrator")]
+        [HttpGet("getlast4transactions")]
+        public async Task<IActionResult> GetLast4Transactions()
+        {
+            int userId = GetUserIdFromToken();
+            var result = await Task.Run(() => _cardTransactionService.GetLast4CardTransactionsForUser(userId));
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Customer,Administrator")]
+        [HttpPost("performtransactionwithcard")]
+        public async Task<IActionResult> PerformTransactionWithCard([FromBody] CardTransactionDto cardTransactionDto)
+        {
+            cardTransactionDto.UserId = GetUserIdFromToken();
+            var result = await Task.Run(() => _cardTransactionService.PerformTransactionWithCard(cardTransactionDto));
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+    }
+
+}

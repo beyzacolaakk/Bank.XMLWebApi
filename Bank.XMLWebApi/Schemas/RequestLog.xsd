@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="ArrayOfRequestLog">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="RequestLog" type="RequestLogType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="RequestLogType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int"/>
+			<xs:element name="Yontem" type="xs:string"/>
+			<xs:element name="Yol" type="xs:string"/>
+			<xs:element name="SorguParametreleri" type="xs:string"/>
+			<xs:element name="Basliklar" type="xs:string"/>
+			<xs:element name="Govde" type="xs:string"/>
+			<xs:element name="KullaniciId" type="xs:int"/>
+			<xs:element name="IstekZamani" type="xs:dateTime"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

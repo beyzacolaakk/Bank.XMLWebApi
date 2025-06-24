@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Kök eleman: LimitIncrease listesi -->
+	<xs:element name="ArrayOfLimitIncrease">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="LimitIncrease" type="LimitIncreaseType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Tekil LimitIncrease tipi -->
+	<xs:complexType name="LimitIncreaseType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int"/>
+			<xs:element name="CurrentLimit" type="xs:decimal"/>
+			<xs:element name="RequestedLimit" type="xs:decimal"/>
+			<xs:element name="ApplicationDate" type="xs:dateTime"/>
+			<xs:element name="Status" type="xs:string"/>
+			<xs:element name="CardId" type="xs:int"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

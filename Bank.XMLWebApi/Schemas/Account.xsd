@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- KÖK ELEMAN -->
+	<xs:element name="ArrayOfAccount">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Account" type="AccountType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- HESAP TİPİ -->
+	<xs:complexType name="AccountType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int"/>
+			<xs:element name="UserId" type="xs:int"/>
+			<xs:element name="AccountNumber">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{8}"/>
+						<!-- TAM 2 RAKAM -->
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AccountType" type="xs:string"/>
+			<xs:element name="Balance">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Currency" type="xs:string" default="TRY"/>
+			<xs:element name="Status" type="xs:string" minOccurs="0"/>
+			<xs:element name="CreatedDate" type="xs:dateTime"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

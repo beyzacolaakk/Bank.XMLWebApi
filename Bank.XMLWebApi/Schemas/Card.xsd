@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="ArrayOfCard">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Card" type="CardType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="CardType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int"/>
+			<xs:element name="UserId" type="xs:int"/>
+			<xs:element name="CardNumber">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{16}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CardType" type="xs:string"/>
+			<xs:element name="CVV">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{3}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Limit" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="ExpirationDate" type="xs:dateTime"/>
+			<xs:element name="Status" type="xs:string" minOccurs="0"/>
+			<xs:element name="IsActive" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

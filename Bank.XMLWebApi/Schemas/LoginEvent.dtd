@@ -1,0 +1,9 @@
+﻿<!ELEMENT ArrayOfLoginEvent (LoginEvent*)>
+
+<!ELEMENT LoginEvent (Id, UserId, IpAddress, IsSuccessful, Timestamp)>
+
+<!ELEMENT Id (#PCDATA)>
+<!ELEMENT UserId (#PCDATA)>
+<!ELEMENT IpAddress (#PCDATA)>
+<!ELEMENT IsSuccessful (#PCDATA)>
+<!ELEMENT Timestamp (#PCDATA)>

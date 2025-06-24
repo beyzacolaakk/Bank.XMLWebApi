@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="User">
+		<xs:complexType>
+			<xs:sequence>
+
+	
+				<xs:element name="Id" type="xs:int"/>
+
+	
+				<xs:element name="FullName" type="xs:string"/>
+
+				
+				<xs:element name="Email">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="[^@\s]+@[^@\s]+\.[^@\s]+"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<xs:element name="Phone">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="\d{11}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+		
+				<xs:element name="PasswordSalt" type="xs:base64Binary"/>
+
+
+				<xs:element name="PasswordHash" type="xs:base64Binary"/>
+
+	
+				<xs:element name="BranchId" type="xs:string"/>
+
+	
+				<xs:element name="RegistrationDate" type="xs:dateTime"/>
+
+				<xs:element name="Active" type="xs:boolean"/>
+
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>
