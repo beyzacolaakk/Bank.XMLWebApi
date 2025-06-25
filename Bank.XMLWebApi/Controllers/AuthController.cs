@@ -21,6 +21,8 @@ namespace Bank.XMLWebApi.Controllers
         }
 
         [HttpPost("login")]
+        [Consumes("application/xml")]
+        [Produces("application/xml")]
         public async Task<ActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
             var result = await _authService.LoginAndCreateToken(userLoginDto);
@@ -42,6 +44,8 @@ namespace Bank.XMLWebApi.Controllers
         }
 
         [HttpPost("register")]
+        [Consumes("application/xml")]
+        [Produces("application/xml")]
         public async Task<ActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
             var result = await _authService.Register(userRegisterDto);
@@ -52,14 +56,14 @@ namespace Bank.XMLWebApi.Controllers
         }
 
         [HttpGet("authenticate")]
-        public async Task<ActionResult> Authenticate()
+        public ActionResult Authenticate()
         {
             var token = Request.Cookies["AuthToken"];
 
             if (string.IsNullOrEmpty(token))
             {
                 var result = new ErrorResult("Unauthorized access!");
-                return Unauthorized(result);
+                return  Unauthorized(result);
             }
 
             var successResult = new SuccessResult("Authentication successful.");
@@ -68,7 +72,7 @@ namespace Bank.XMLWebApi.Controllers
 
         [Authorize(Roles = "Customer,Administrator")]
         [HttpPost("logout")]
-        public async Task<ActionResult> Logout()
+        public ActionResult Logout()
         {
             int userId = GetUserIdFromToken();
             _authService.Logout(userId);

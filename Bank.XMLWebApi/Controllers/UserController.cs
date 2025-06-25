@@ -1,4 +1,6 @@
 ﻿using Bank.Business.Abstract;
+using Bank.Core.Utilities.XMLSerializeToXML;
+using Bank.XMLWebApi.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,18 +18,34 @@ namespace Bank.XMLWebApi.Controllers
             _userService = userService;
         }
 
-        [Authorize(Roles = "Customer,Administrator")]
         [HttpGet("getuser")]
-        public async Task<IActionResult> GetUser()
+        public async Task<IActionResult> GetFilteredUserXml()
         {
             var userId = GetUserIdFromToken();
-            var result = await _userService.GetUserDetails(userId);
-            if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
+            var result = await _userService.GetById(userId);
+
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            // XML'e çevir
+            string fullXml = XmlHelper.SerializeToXml(result.Data);
+
+            // XML içinden sadece gerekli alanları çe
+            var (FullName, Email, Phone) = UserParse.ParseUserInfoFromXml(fullXml);  
+
+            // Yeni sade XML oluştur
+            string filteredXml = $@"
+<User>
+  <FullName>{FullName}</FullName>
+  <Email>{Email}</Email>
+  <Phone>{Phone}</Phone>
+</User>";
+
+            return Content(filteredXml, "application/xml");
         }
 
-   
+
+
     }
 
 }

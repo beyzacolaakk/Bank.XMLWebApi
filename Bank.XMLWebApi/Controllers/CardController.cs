@@ -1,11 +1,15 @@
-﻿using Bank.Business.Abstract;
+﻿
+
+using Bank.Business.Abstract;
 using Bank.Core.Extensions;
 using Bank.Core.Utilities.XMLSerializeToXML;
 using Bank.Entity.Concrete;
 using Bank.Entity.DTOs;
+using Bank.XMLWebApi.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml;
 
 namespace Bank.XMLWebApi.Controllers
 {
@@ -51,15 +55,65 @@ namespace Bank.XMLWebApi.Controllers
         }
 
 
-        [Authorize(Roles = "Customer,Administrator")]
-        [HttpGet("getbyid/{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpGet("getbyid/xml/{id}")]
+        public async Task<IActionResult> GetCardPartialXml([FromRoute] int id)
         {
-            var result = await Task.Run(() => _cardService.GetCardRequestById(id));
-            if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
+            var result = await _cardService.GetById(id);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            string fullXml = XmlHelper.SerializeToXml(result.Data);
+
+            int idVal = 0;
+            string cardType = "";
+            decimal? limit = null;
+            string status = "";
+            DateTime expirationDate = DateTime.MinValue;
+
+            using (var reader = XmlReader.Create(new StringReader(fullXml)))
+            {
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        switch (reader.Name)
+                        {
+                            case "Id":
+                                idVal = reader.ReadElementContentAsInt();
+                                break;
+                            case "CardType":
+                                cardType = reader.ReadElementContentAsString();
+                                break;
+                            case "Limit":
+                                limit = reader.ReadElementContentAsDecimal();
+                                break;
+                            case "Status":
+                                status = reader.ReadElementContentAsString();
+                                break;
+                            case "ExpirationDate":
+                                expirationDate = reader.ReadElementContentAsDateTime();
+                                break;
+                        }
+                    }
+                }
+            }
+
+            // XML stringini elle oluşturuyoruz
+            string partialXml = $@"<?xml version=""1.0"" encoding=""utf-8""?>
+<CardPartial>
+    <Id>{idVal}</Id>
+    <CardType>{System.Security.SecurityElement.Escape(cardType)}</CardType>
+    <Limit>{limit?.ToString() ?? ""}</Limit>
+    <Status>{System.Security.SecurityElement.Escape(status)}</Status>
+    <ExpirationDate>{expirationDate.ToString("o")}</ExpirationDate>
+</CardPartial>";
+
+            return Content(partialXml, "application/xml");
         }
+
+
+
 
         [Authorize(Roles = "Customer,Administrator")]
         [HttpPost("createautomaticcard")]

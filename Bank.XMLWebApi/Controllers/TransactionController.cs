@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bank.XMLWebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Produces("application/xml")]
+    [Consumes("application/xml")]
     [ApiController]
     public class TransactionController : BaseController
     {
@@ -18,7 +20,6 @@ namespace Bank.XMLWebApi.Controllers
             _transactionService = transactionService;
         }
 
-        [Authorize(Roles = "Administrator")]
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {

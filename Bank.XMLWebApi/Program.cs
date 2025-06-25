@@ -63,7 +63,7 @@ builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IRequestLogService, RequestLogService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
-
+builder.Services.AddHttpClient<ICurrencyExchangeService, CurrencyExchangeService>();
 
 builder.Services.AddScoped<IUserDal, EfUserDal>();
 builder.Services.AddScoped<ICardDal, EfCardDal>();

@@ -29,7 +29,7 @@ namespace Bank.XMLWebApi.Controllers
                 return BadRequest(result);
             }
 
-            var xml = XmlConverter.ConvertToXml(result.Data);
+            var xml = XmlConverter.Serialize(result.Data);
 
             string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "SupportRequest.xsd");
 
@@ -54,7 +54,7 @@ namespace Bank.XMLWebApi.Controllers
                 return BadRequest(result);
             }
 
-            var xml = XmlConverter.ConvertToXml(result.Data);
+            var xml = XmlConverter.Serialize(result.Data);
 
             string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "SupportRequest.xsd");
 
@@ -80,7 +80,7 @@ namespace Bank.XMLWebApi.Controllers
         [HttpGet("getsupportrequests")]
         public async Task<IActionResult> GetSupportRequests()
         {
-            var result = await _supportRequestService.GetSupportRequests();
+            var result = await _supportRequestService.GetAll();
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
@@ -129,7 +129,7 @@ namespace Bank.XMLWebApi.Controllers
                 return BadRequest(result.Message);
 
          
-            string xmlString = XmlConverter.ConvertToXml(result.Data);
+            string xmlString = XmlConverter.Serialize(result.Data);
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlString);
@@ -158,7 +158,7 @@ namespace Bank.XMLWebApi.Controllers
                 xpath += "[" + string.Join(" and ", conditions) + "]";
             }
 
-            XmlNodeList filteredNodes = xmlDoc.SelectNodes(xpath, nsmgr);
+            XmlNodeList filteredNodes = xmlDoc.SelectNodes(xpath, nsmgr)!;
 
             if (filteredNodes == null || filteredNodes.Count == 0)
                 return NotFound("No matching support requests found.");

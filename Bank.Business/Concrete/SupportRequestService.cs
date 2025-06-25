@@ -26,20 +26,20 @@ namespace Bank.Business.Concrete
 
         public async Task<IResult> Add(SupportRequest supportRequest)
         {
-            _supportRequestDal.Add(supportRequest);
+            await _supportRequestDal.Add(supportRequest);
             return new SuccessResult(Messages.AddSuccessful);
         }
 
         public async Task<IResult> Update(SupportRequest supportRequest)
         {
-            _supportRequestDal.Update(supportRequest);
+            await _supportRequestDal.Update(supportRequest);
             return new SuccessResult(Messages.UpdateSuccessful);
         }
 
         public async Task<IResult> Delete(int id)
         {
             var supportRequest = GetById(id).Result.Data;
-            _supportRequestDal.Delete(supportRequest);
+            await _supportRequestDal.Delete(supportRequest);
             return new SuccessResult(Messages.DeleteSuccessful);
         }
 
@@ -55,7 +55,7 @@ namespace Bank.Business.Concrete
                 Category = dto.Category
             };
 
-            string xml = XmlConverter.ConvertToXml(supportRequest);
+            string xml = XmlConverter.Serialize(supportRequest);
             string xsdPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas/SupportRequest.xsd");
 
             if (!XmlValidator.ValidateXml(xml, xsdPath, out var errors))
@@ -63,7 +63,7 @@ namespace Bank.Business.Concrete
                 return new ErrorResult("XML validation failed:\n" + string.Join("\n", errors));
             }
 
-             _supportRequestDal.Add(supportRequest);
+            await _supportRequestDal.Add(supportRequest);
             return new SuccessResult(Messages.AddSuccessful);
         }
 
@@ -81,31 +81,29 @@ namespace Bank.Business.Concrete
 
         public async Task<IDataResult<List<SupportRequest>>> GetAllByUserId(int userId) 
         {
-            // 1) DB’den al
+      
             var list = await _supportRequestDal.GetAll();
 
-            // 2) Listeyi XML’e dönüştür
-            // (XmlConverter'ın List<T> versiyonu ArrayOfSupportRequest root'una seri hale getiriyor)
-            string xml = XmlConverter.ConvertToXml(list);
 
-            // 3) XML’i XDocument'e yükle
+            string xml = XmlConverter.Serialize(list);
+
+
             var doc = XDocument.Parse(xml);
 
-            // 4) XPath ile sadece Id=3 olan düğümleri seç
+
             var nodes = doc
               .XPathSelectElements("/ArrayOfSupportRequest/SupportRequest[Id=7]");
 
-            // 5) Seçilen düğümlerden SupportRequest nesneleri oluştur
             var filtered = nodes.Select(e => new SupportRequest
             {
-                Id = (int)e.Element("Id"),
-                UserId = (int)e.Element("UserId"),
-                Subject = (string)e.Element("Subject"),
-                Message = (string)e.Element("Message"),
-                Status = (string)e.Element("Status"),
-                Response = (string?)e.Element("Response"),
-                Category = (string?)e.Element("Category"),
-                CreatedDate = (DateTime)e.Element("CreatedDate")
+                Id = (int)e.Element("Id")!,
+                UserId = (int)e.Element("UserId")!,
+                Subject = (string)e.Element("Subject")!,
+                Message = (string)e.Element("Message")!,
+                Status = (string)e.Element("Status")!,
+                Response = (string?)e.Element("Response")!,
+                Category = (string?)e.Element("Category")!,
+                CreatedDate = (DateTime)e.Element("CreatedDate")!
             }).ToList();
 
             return new SuccessDataResult<List<SupportRequest>>(filtered, Messages.RetrieveSuccessful);
@@ -125,7 +123,7 @@ namespace Bank.Business.Concrete
 
         public async Task<IResult> UpdateSupportRequestStatus(SupportRequestUpdateDto dto)
         {
-            var updated = await _supportRequestDal.UpdateSupportRequestStatus(dto.Id, dto.Status!, dto.Response);
+            var updated = await _supportRequestDal.UpdateSupportRequestStatus(dto.Id, dto.Status!, dto.Response!);
             return updated
                 ? new SuccessResult(Messages.UpdateSuccessful)
                 : new ErrorResult(Messages.UpdateFailed);
@@ -134,7 +132,7 @@ namespace Bank.Business.Concrete
         public async Task<IDataResult<SupportRequestDto>> GetSupportRequestById(int id)
         {
             var request = await _supportRequestDal.GetSupportRequestById(id);
-            return new SuccessDataResult<SupportRequestDto>(request, Messages.RetrieveSuccessful);
+            return new SuccessDataResult<SupportRequestDto>(request!, Messages.RetrieveSuccessful);
         }
 
         public async Task<IDataResult<List<SupportRequest>>> FilterSupportRequests(int userId, string status, string search)

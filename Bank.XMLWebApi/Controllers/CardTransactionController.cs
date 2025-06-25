@@ -3,9 +3,11 @@ using Bank.Core.Extensions;
 using Bank.Core.Utilities.XMLSerializeToXML;
 using Bank.Entity.Concrete;
 using Bank.Entity.DTOs;
+using Bank.XMLWebApi.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 
 namespace Bank.XMLWebApi.Controllers
 {
@@ -45,15 +47,31 @@ namespace Bank.XMLWebApi.Controllers
             return Content(xmlString, "application/xml");
         }
 
-        [Authorize(Roles = "Customer,Administrator")]
-        [HttpGet("getbyid/{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpGet("getbyid/xml/{id}")]
+        public async Task<IActionResult> GetByIdAsXml(int id)
         {
-            var result = await Task.Run(() => _cardTransactionService.GetById(id));
-            if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
+            var result = await _cardTransactionService.GetById(id);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            var transaction = result.Data;
+
+            // LINQ to XML (XDocument) ile sadece istenen alanlar XML'e çevrilir
+            var xml = new XDocument(
+                new XElement("CardTransaction",
+                    new XElement("Id", transaction.Id),
+                    new XElement("TransactionType", transaction.TransactionType),
+                    new XElement("Amount", transaction.Amount),
+                    new XElement("TransactionDate", transaction.TransactionDate.ToString("yyyy-MM-ddTHH:mm:ss")),
+                    new XElement("Status", transaction.Status)
+                )
+            );
+
+            return Content(xml.ToString(), "application/xml");
         }
+
+
 
         [Authorize(Roles = "Customer,Administrator")]
         [HttpPost("add")]
