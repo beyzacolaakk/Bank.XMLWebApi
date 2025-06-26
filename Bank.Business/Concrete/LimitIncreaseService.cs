@@ -95,14 +95,14 @@ namespace Bank.Business.Concrete
         public async Task<IDataResult<LimitIncreaseDto>> GetCardLimitRequestById(int id)
         {
             var entity = await _limitIncreaseDal.GetCardLimitRequestById(id);
-            return new SuccessDataResult<LimitIncreaseDto>(entity, Messages.GetAllSuccessful);
+            return new SuccessDataResult<LimitIncreaseDto>(entity, Messages.GetByIdSuccessful);
         }
 
         public async Task<IResult> UpdateCardLimitRequest(LimitIncreaseCreateDto limitIncreaseAddDto)
         {
             _memoryCache.Remove("cardLimitRequestsCache");
 
-            if (limitIncreaseAddDto.Status == "Approved")
+            if (limitIncreaseAddDto.Status == "Active")
             {
                 decimal currentLimit = Convert.ToDecimal(limitIncreaseAddDto.CurrentLimit);
 

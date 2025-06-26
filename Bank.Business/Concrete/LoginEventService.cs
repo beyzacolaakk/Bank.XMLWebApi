@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -63,7 +64,6 @@ namespace Bank.Business.Concrete
 
             return new SuccessDataResult<List<LoginEvent>>(sorted, Messages.GetAllSuccessful);
         }
-
         public async Task<IDataResult<LoginEvent>> GetById(int id)
         {
             var loginEvent = await _loginEventDal.Get(x => x.Id == id);

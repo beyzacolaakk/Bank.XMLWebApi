@@ -7,7 +7,8 @@ namespace Bank.XMLWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Produces("application/xml")] // Buraya dikkat
+    [Consumes("application/xml")]
+    [Produces("application/xml")]
     public class CurrencyController : ControllerBase
     {
         private readonly ICurrencyExchangeService _currencyService;

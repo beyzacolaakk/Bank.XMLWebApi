@@ -56,7 +56,7 @@ namespace Bank.Business.Concrete
 
             switch (card.CardType)
             {
-                case "Credit Card":
+                case "Credit":
                     if (card.Limit == null)
                         return new ErrorResult("Credit card limit is not defined.");
 
@@ -119,7 +119,7 @@ namespace Bank.Business.Concrete
                 Amount = i.Amount,
             }).ToList();
 
-            return new SuccessDataResult<List<TransactionSummaryDto>>(lastTransactions);
+            return new SuccessDataResult<List<TransactionSummaryDto>>(lastTransactions,Messages.TransactionLast4Success);
         }
 
         public async Task<IResult> Delete(CardTransaction cardTransaction)

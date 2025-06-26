@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="LimitIncreaseCreateDto">
+		<xs:complexType>
+			<xs:sequence>
+
+				<!-- currentLimit: nullable decimal, 0 ve üzeri -->
+				<xs:element name="currentLimit" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:minInclusive value="0"/>
+							<xs:maxInclusive value="1000000"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<!-- requestedLimit: required, > 0 -->
+				<xs:element name="requestedLimit">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:minExclusive value="0"/>
+							<xs:maxInclusive value="10000000"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<!-- cardNumber: optional, 16 haneli rakamlar -->
+				<xs:element name="cardNumber" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="\d{16}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<!-- status: optional, sabit değerlerden biri -->
+				<xs:element name="status" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Pending"/>
+							<xs:enumeration value="Active"/>
+							<xs:enumeration value="Rejected"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<!-- id: optional, pozitif int -->
+				<xs:element name="id" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

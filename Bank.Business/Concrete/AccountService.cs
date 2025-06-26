@@ -43,6 +43,7 @@ namespace Bank.Business.Concrete
 
         public async Task<IResult> Add(Account account)
         {
+
             await _accountDal.Add(account);
             return new SuccessResult(Messages.AddSuccessful);
         }

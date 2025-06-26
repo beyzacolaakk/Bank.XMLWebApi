@@ -13,6 +13,8 @@ namespace Bank.XMLWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Consumes("application/xml")]
+    [Produces("application/xml")]
     public class CardTransactionController : BaseController
     {
         private readonly ICardTransactionService _cardTransactionService;
@@ -21,33 +23,18 @@ namespace Bank.XMLWebApi.Controllers
         {
             _cardTransactionService = cardTransactionService;
         }
-
-        [HttpGet("getall/xml")]
+        [Authorize(Roles = "Administrator")]
+        [HttpGet("getall")]
         public async Task<IActionResult> GetAll() 
         {
             var result = await _cardTransactionService.GetAll();
 
-            if (!result.Success)
-                return BadRequest(result);
-
-            string xmlString = XmlHelper.SerializeToXml(result.Data);
-            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "CardTransaction.xsd");
-
-            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
-
-            if (!isValid)
-            {
-                return BadRequest(new
-                {
-                    Message = "XML validation failed",
-                    Errors = errors
-                });
-            }
-
-            return Content(xmlString, "application/xml");
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
         }
-
-        [HttpGet("getbyid/xml/{id}")]
+        [Authorize(Roles = "Customer,Administrator")]
+        [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetByIdAsXml(int id)
         {
             var result = await _cardTransactionService.GetById(id);
@@ -57,18 +44,19 @@ namespace Bank.XMLWebApi.Controllers
 
             var transaction = result.Data;
 
-            // LINQ to XML (XDocument) ile sadece istenen alanlar XML'e çevrilir
             var xml = new XDocument(
                 new XElement("CardTransaction",
-                    new XElement("Id", transaction.Id),
-                    new XElement("TransactionType", transaction.TransactionType),
-                    new XElement("Amount", transaction.Amount),
-                    new XElement("TransactionDate", transaction.TransactionDate.ToString("yyyy-MM-ddTHH:mm:ss")),
-                    new XElement("Status", transaction.Status)
+                    new XElement("id", transaction.Id),
+                    new XElement("transactionType", transaction.TransactionType),
+                    new XElement("amount", transaction.Amount),
+                    new XElement("transactionDate", transaction.TransactionDate.ToString("yyyy-MM-ddTHH:mm:ss")),
+                    new XElement("status", transaction.Status)
                 )
             );
 
-            return Content(xml.ToString(), "application/xml");
+            if (result.Success)
+                return Content(xml.ToString(), "application/xml");
+            return BadRequest(result);
         }
 
 
@@ -77,6 +65,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] CardTransaction cardTransaction)
         {
+            string xmlString = XmlHelper.SerializeToXml(cardTransaction);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\CardTransaction.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await Task.Run(() => _cardTransactionService.Add(cardTransaction));
             if (result.Success)
                 return Ok(result);
@@ -87,6 +89,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] CardTransaction cardTransaction)
         {
+            string xmlString = XmlHelper.SerializeToXml(cardTransaction);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\CardTransaction.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await Task.Run(() => _cardTransactionService.Update(cardTransaction));
             if (result.Success)
                 return Ok(result);
@@ -97,6 +113,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] CardTransaction cardTransaction)
         {
+            string xmlString = XmlHelper.SerializeToXml(cardTransaction);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\CardTransaction.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await Task.Run(() => _cardTransactionService.Delete(cardTransaction));
             if (result.Success)
                 return Ok(result);
@@ -118,6 +148,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpPost("performtransactionwithcard")]
         public async Task<IActionResult> PerformTransactionWithCard([FromBody] CardTransactionDto cardTransactionDto)
         {
+            string xmlString = XmlHelper.SerializeToXml(cardTransactionDto);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\CardTransactionDto.xsd"; 
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             cardTransactionDto.UserId = GetUserIdFromToken();
             var result = await Task.Run(() => _cardTransactionService.PerformTransactionWithCard(cardTransactionDto));
             if (result.Success)

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-
 namespace Bank.Core.Extensions
 {
     public static class XmlValidator
@@ -41,26 +40,40 @@ namespace Bank.Core.Extensions
         }
         public static bool ValidateXmlWithDtd(string xmlContent, string dtdPath, out string errors)
         {
-            string validationErrors = string.Empty;  // local değişken
+            var validationErrors = new StringBuilder();
 
             try
             {
+                string dtdFileName = Path.GetFileName(dtdPath); // sadece dosya adı
+                string dtdDirectory = Path.GetDirectoryName(dtdPath)!;
+
+                // XML declaration'ı ve DTD'yi başa ekle
+                string xmlWithDoctype = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE Transaction SYSTEM \"{dtdFileName}\">\n{xmlContent}";
+
                 var settings = new XmlReaderSettings
                 {
                     DtdProcessing = DtdProcessing.Parse,
-                    ValidationType = ValidationType.DTD
+                    ValidationType = ValidationType.DTD,
+                    XmlResolver = new XmlUrlResolver()
                 };
 
                 settings.ValidationEventHandler += (sender, e) =>
                 {
-                    validationErrors += e.Message + Environment.NewLine;
+                    validationErrors.AppendLine(e.Message);
                 };
 
-                using var reader = XmlReader.Create(new StringReader(xmlContent), settings);
+                var baseUri = "file:///" + dtdDirectory.Replace("\\", "/") + "/";
+                var context = new XmlParserContext(null, null, null, null, null, null, null, null, XmlSpace.None, Encoding.UTF8)
+                {
+                    BaseURI = baseUri
+                };
+
+                using var reader = XmlReader.Create(new StringReader(xmlWithDoctype), settings, context);
+
                 while (reader.Read()) { }
 
-                errors = validationErrors;
-                return string.IsNullOrEmpty(validationErrors);
+                errors = validationErrors.ToString();
+                return string.IsNullOrWhiteSpace(errors);
             }
             catch (Exception ex)
             {
@@ -68,6 +81,8 @@ namespace Bank.Core.Extensions
                 return false;
             }
         }
+
+
 
 
 

@@ -56,7 +56,7 @@ namespace Bank.Business.Concrete
             };
 
             string xml = XmlConverter.Serialize(supportRequest);
-            string xsdPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas/SupportRequest.xsd");
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\SupportRequest.xsd";
 
             if (!XmlValidator.ValidateXml(xml, xsdPath, out var errors))
             {
@@ -92,19 +92,20 @@ namespace Bank.Business.Concrete
 
 
             var nodes = doc
-              .XPathSelectElements("/ArrayOfSupportRequest/SupportRequest[Id=7]");
+                .XPathSelectElements($"/ArrayOfSupportRequest/SupportRequest[userId={userId}]");
 
             var filtered = nodes.Select(e => new SupportRequest
             {
-                Id = (int)e.Element("Id")!,
-                UserId = (int)e.Element("UserId")!,
-                Subject = (string)e.Element("Subject")!,
-                Message = (string)e.Element("Message")!,
-                Status = (string)e.Element("Status")!,
-                Response = (string?)e.Element("Response")!,
-                Category = (string?)e.Element("Category")!,
-                CreatedDate = (DateTime)e.Element("CreatedDate")!
+                Id = (int?)e.Element("id") ?? 0,
+                UserId = (int?)e.Element("userId") ?? 0,
+                Subject = (string?)e.Element("subject") ?? string.Empty,
+                Message = (string?)e.Element("message") ?? string.Empty,
+                Status = (string?)e.Element("status") ?? string.Empty,
+                Response = (string?)e.Element("response") ?? string.Empty,
+                Category = (string?)e.Element("category") ?? string.Empty,
+                CreatedDate = (DateTime?)e.Element("createdDate") ?? DateTime.MinValue
             }).ToList();
+
 
             return new SuccessDataResult<List<SupportRequest>>(filtered, Messages.RetrieveSuccessful);
         }

@@ -1,0 +1,11 @@
+<!ELEMENT Transaction (id, senderAccountId?, receiverAccountId?, cardId?, amount, currentBalance?, transactionType, status, description?, transactionDate)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT senderAccountId (#PCDATA)>
+<!ELEMENT receiverAccountId (#PCDATA)>
+<!ELEMENT cardId (#PCDATA)>
+<!ELEMENT amount (#PCDATA)>
+<!ELEMENT currentBalance (#PCDATA)>
+<!ELEMENT transactionType (#PCDATA)>
+<!ELEMENT status (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT transactionDate (#PCDATA)>

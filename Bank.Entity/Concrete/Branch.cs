@@ -5,18 +5,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Bank.Entity.Concrete
 {
+    [XmlRoot("Branch")]
     public class Branch : IEntity
     {
+        [XmlElement("id")]
         public int Id { get; set; }
 
-        public string BranchName { get; set; } = string.Empty;
+        [XmlElement("branchName")]
+        public string BranchName { get; set; }
 
-        public string Address { get; set; } = string.Empty;
+        [XmlElement("address")]
+        public string Address { get; set; }
 
-        public string Phone { get; set; } = string.Empty;
+        [XmlElement("phone")]
+        public string Phone { get; set; }
     }
+
 
 }

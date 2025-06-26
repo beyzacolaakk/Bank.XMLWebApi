@@ -36,6 +36,7 @@ namespace Bank.Business.Constant
 
         public static string MoneyTransferSuccessful = "Your money transfer was completed successfully.";
         public static string TransactionNotSaved = "Money transfer completed but transaction was not saved.";
+        public static string TransactionLast4Success = "The last 4 transactions were brought successfully.";
     }
 
 }

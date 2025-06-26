@@ -1,37 +1,63 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xs:element name="ArrayOfCard">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="Card" type="CardType" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xs:element name="Card" type="CardType" />
 
 	<xs:complexType name="CardType">
 		<xs:sequence>
-			<xs:element name="Id" type="xs:int"/>
-			<xs:element name="UserId" type="xs:int"/>
-			<xs:element name="CardNumber">
+			<xs:element name="id" type="xs:int" />
+			<xs:element name="userId" type="xs:int" />
+
+			<xs:element name="cardNumber" minOccurs="1" maxOccurs="1">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:pattern value="\d{16}"/>
+						<xs:minLength value="12"/>
+						<xs:maxLength value="19"/>
+						<xs:pattern value="\d+"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="CardType" type="xs:string"/>
-			<xs:element name="CVV">
+
+			<xs:element name="cardType" minOccurs="1" maxOccurs="1">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:pattern value="\d{3}"/>
+						<xs:enumeration value="Credit"/>
+						<xs:enumeration value="Bank"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="Limit" type="xs:decimal" minOccurs="0"/>
-			<xs:element name="ExpirationDate" type="xs:dateTime"/>
-			<xs:element name="Status" type="xs:string" minOccurs="0"/>
-			<xs:element name="IsActive" type="xs:boolean"/>
+
+			<xs:element name="cvv" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{3,4}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:element name="limit" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+
+			<xs:element name="expirationDate" type="xs:dateTime" />
+
+			<xs:element name="status" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Active"/>
+						<xs:enumeration value="Inactive"/>
+						<xs:enumeration value="Rejected"/>
+						<xs:enumeration value="Pending"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:element name="isActive" type="xs:boolean" />
 		</xs:sequence>
 	</xs:complexType>
 

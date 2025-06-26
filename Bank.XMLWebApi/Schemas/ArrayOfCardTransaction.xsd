@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Kök eleman: Liste şeklinde -->
+	<xs:element name="ArrayOfCardTransaction">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="CardTransaction" type="CardTransactionType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Tekil CardTransaction nesnesi -->
+	<xs:complexType name="CardTransactionType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int"/>
+			<xs:element name="CardId" type="xs:int"/>
+			<xs:element name="CurrentBalance" type="xs:decimal"/>
+			<xs:element name="Amount" type="xs:decimal"/>
+			<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			<xs:element name="Status" type="xs:string"/>
+			<xs:element name="TransactionType" type="xs:string"/>
+			<xs:element name="TransactionDate" type="xs:dateTime"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

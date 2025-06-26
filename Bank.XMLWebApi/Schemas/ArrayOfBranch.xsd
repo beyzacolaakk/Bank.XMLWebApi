@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Kök element: ArrayOfBranch -->
+	<xs:element name="ArrayOfBranch">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Branch" type="BranchType" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Branch tipi -->
+	<xs:complexType name="BranchType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int" />
+			<xs:element name="BranchName" type="xs:string" />
+			<xs:element name="Address" type="xs:string" />
+			<xs:element name="Phone" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

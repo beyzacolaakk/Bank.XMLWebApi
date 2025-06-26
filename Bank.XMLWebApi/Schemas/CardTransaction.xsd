@@ -1,27 +1,46 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
 
-	<!-- Kök eleman: Liste şeklinde -->
-	<xs:element name="ArrayOfCardTransaction">
+	<xs:element name="CardTransaction">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="CardTransaction" type="CardTransactionType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="id" type="xs:int" />
+				<xs:element name="cardId" type="xs:int" />
+				<xs:element name="currentBalance">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:minInclusive value="0.01"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="amount">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:minInclusive value="0.01"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="description" type="xs:string" minOccurs="0" />
+				<xs:element name="status">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Successful Transfer"/>
+							<xs:enumeration value="Failed Transfer"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="transactionType">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Deposit"/>
+							<xs:enumeration value="Withdraw"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="transactionDate" type="xs:dateTime" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-
-	<!-- Tekil CardTransaction nesnesi -->
-	<xs:complexType name="CardTransactionType">
-		<xs:sequence>
-			<xs:element name="Id" type="xs:int"/>
-			<xs:element name="CardId" type="xs:int"/>
-			<xs:element name="CurrentBalance" type="xs:decimal"/>
-			<xs:element name="Amount" type="xs:decimal"/>
-			<xs:element name="Description" type="xs:string" minOccurs="0"/>
-			<xs:element name="Status" type="xs:string"/>
-			<xs:element name="TransactionType" type="xs:string"/>
-			<xs:element name="TransactionDate" type="xs:dateTime"/>
-		</xs:sequence>
-	</xs:complexType>
 
 </xs:schema>

@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="Account">
+		<xs:complexType>
+			<xs:sequence>
+
+				<xs:element name="Id" type="xs:int" />
+
+				<xs:element name="UserId" type="xs:int" />
+
+				<xs:element name="AccountNumber">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:length value="8"/>
+							<xs:pattern value="\d{8}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<xs:element name="AccountType">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<!-- İsteğe bağlı: örneğin vadesiz, vadeli vb. -->
+							<xs:maxLength value="30"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<xs:element name="Balance">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:minInclusive value="0.00"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<xs:element name="Currency">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<!-- Sadece TRY, USD, EUR gibi kodlara izin verilebilir -->
+							<xs:enumeration value="TRY"/>
+							<xs:enumeration value="USD"/>
+							<xs:enumeration value="EUR"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<xs:element name="Status" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Active"/>
+							<xs:enumeration value="Inactive"/>
+							<xs:enumeration value="Closed"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<xs:element name="CreatedDate" type="xs:dateTime"/>
+
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

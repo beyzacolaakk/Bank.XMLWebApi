@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Kök eleman -->
+	<xs:element name="MoneyTransferDto" type="MoneyTransferDtoType" />
+
+	<!-- Ana kompleks tip -->
+	<xs:complexType name="MoneyTransferDtoType">
+		<xs:sequence>
+			<xs:element name="userId" type="xs:int" />
+			<xs:element name="senderAccountId" type="xs:string">
+
+			</xs:element>
+			<xs:element name="receiverAccountId" type="xs:string">
+
+			</xs:element>
+			<xs:element name="amount" type="xs:decimal" />
+			<xs:element name="transactionType" type="xs:string" />
+			<xs:element name="description" type="xs:string" minOccurs="0" />
+			<xs:element name="paymentMethod" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

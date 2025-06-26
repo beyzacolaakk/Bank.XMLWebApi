@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="LimitIncreaseRequestDto">
+		<xs:complexType>
+			<xs:sequence>
+
+				<!-- CardId: zorunlu, pozitif tam sayı -->
+				<xs:element name="cardId">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<!-- CurrentLimit: zorunlu, 0 ve üzeri olmalı -->
+				<xs:element name="currentLimit">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:minInclusive value="0.00"/>
+							<xs:maxInclusive value="1000000.00"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<!-- NewLimit: zorunlu, currentLimit'ten büyük olmalı mantıksal olarak (XSD'de bu kural doğrudan zorlanamaz ama aralıkla sınırlandırılır) -->
+				<xs:element name="newLimit">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:minInclusive value="0.01"/>
+							<xs:maxInclusive value="10000000.00"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

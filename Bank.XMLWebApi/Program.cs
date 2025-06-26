@@ -5,7 +5,10 @@ using Bank.Core.Utilities.Security.JWT;
 using Bank.DataAccess.Abstract;
 using Bank.DataAccess.EntityFramework;
 using Bank.DataAccess.EntityFramework.Context;
+using Bank.XMLWebApi.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -40,8 +43,22 @@ builder.Services.AddAuthentication(options =>
         };
 
     });
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<ISupportRequestService, SupportRequestService>();
@@ -83,7 +100,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+        foreach (var desc in provider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{desc.GroupName}/swagger.json", $"Bank API {desc.GroupName.ToUpperInvariant()}");
+        }
+    });
 }
 
 app.UseHttpsRedirection();

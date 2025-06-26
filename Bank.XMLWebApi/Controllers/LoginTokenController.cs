@@ -1,4 +1,6 @@
 ﻿using Bank.Business.Abstract;
+using Bank.Core.Extensions;
+using Bank.Core.Utilities.XMLSerializeToXML;
 using Bank.Entity.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,8 +34,9 @@ namespace Bank.XMLWebApi.Controllers
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var result = await _loginTokenService.GetById(id);
+            string xmlString = XmlHelper.SerializeToXml(result.Data);
             if (result.Success)
-                return Ok(result);
+                return Content(xmlString.ToString(), "application/xml");
             return BadRequest(result);
         }
 
@@ -41,6 +44,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] LoginToken token)
         {
+            string xmlString = XmlHelper.SerializeToXml(token);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\LoginToken.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await _loginTokenService.Add(token);
             if (result.Success)
                 return Ok(result);
@@ -51,6 +68,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] LoginToken token)
         {
+            string xmlString = XmlHelper.SerializeToXml(token);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\LoginToken.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await _loginTokenService.Update(token);
             if (result.Success)
                 return Ok(result);
@@ -61,6 +92,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] LoginToken token)
         {
+            string xmlString = XmlHelper.SerializeToXml(token);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\LoginToken.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await _loginTokenService.Delete(token);
             if (result.Success)
                 return Ok(result);

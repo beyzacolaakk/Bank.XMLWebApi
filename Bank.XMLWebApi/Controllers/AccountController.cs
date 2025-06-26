@@ -1,4 +1,5 @@
 ﻿using Bank.Business.Abstract;
+using Bank.Core.Entities.Concrete;
 using Bank.Core.Extensions;
 using Bank.Core.Utilities.Results;
 using Bank.Core.Utilities.XMLSerializeToXML;
@@ -12,6 +13,8 @@ namespace Bank.XMLWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Consumes("application/xml")]
+    [Produces("application/xml")]
     public class AccountController : BaseController
     {
         private readonly IAccountService _accountService;
@@ -20,7 +23,8 @@ namespace Bank.XMLWebApi.Controllers
         {
             _accountService = accountService;
         }
-        [HttpGet("getall/xml")]
+        [Authorize(Roles = "Administrator")]
+        [HttpGet("getall")]
         public async Task<IActionResult> GetAllAsXml()
         {
             var result = await _accountService.GetAll();
@@ -29,7 +33,7 @@ namespace Bank.XMLWebApi.Controllers
             var xmlString = XmlHelper.SerializeToXml(result.Data);
 
   
-            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Account.xsd");
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "ArrayOfAccount.xsd");
 
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
@@ -43,11 +47,13 @@ namespace Bank.XMLWebApi.Controllers
                 });
             }
 
-            return Content(xmlString, "application/xml");
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
         }
 
 
-        [HttpGet("getbyid/xml/{id}")]
+        [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetByIdAsXml([FromRoute] int id)
         {
             var result = await _accountService.GetAccountRequestById(id);
@@ -57,7 +63,7 @@ namespace Bank.XMLWebApi.Controllers
 
             string xmlString = XmlHelper.SerializeToXml(result.Data);
 
-            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Account.xsd");
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\AccountRequestDto.xsd";
 
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
@@ -71,7 +77,9 @@ namespace Bank.XMLWebApi.Controllers
                 });
             }
 
-            return Content(xmlString, "application/xml");
+            if (result.Success)
+                return Content(xmlString, "application/xml");
+            return BadRequest(result);
         }
 
 
@@ -81,30 +89,46 @@ namespace Bank.XMLWebApi.Controllers
         {
             int userId = GetUserIdFromToken();
             var result = await _accountService.GetAllByUserId(userId);
+            string xmlString = XmlHelper.SerializeToXml(result.Data);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
         }
-
-        [Authorize(Roles = "Customer,Administrator")]
+        [Authorize(Roles = "Administrator")]
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] Account account)
         {
+            string xmlString = XmlHelper.SerializeToXml(account);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\AccountAdd.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await _accountService.Add(account);
+
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Customer,Administrator")]
+ 
         [HttpGet("getassets")]
         public async Task<IActionResult> GetAssets()
         {
             int userId = GetUserIdFromToken();
             var result = await _accountService.GetAssetsAsync(userId);
+            string xmlString = XmlHelper.SerializeToXml(result.Data);
             if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
+                return Content(xmlString, "application/xml");
+            return Content(result.Message, "application/xml");
         }
 
         [Authorize(Roles = "Administrator")]
@@ -122,15 +146,17 @@ namespace Bank.XMLWebApi.Controllers
         public async Task<IActionResult> GetRequestCounts()
         {
             var result = await _accountService.GetRequestCounts();
+            string xmlString = XmlHelper.SerializeToXml(result.Data);
             if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
+                return Content(xmlString, "application/xml");
+            return Content(result.Message, "application/xml");
         }
 
         [Authorize(Roles = "Customer,Administrator")]
         [HttpPost("createautomaticaccount")]
         public async Task<IActionResult> CreateAutomaticAccount([FromBody] CreateAccountDto createAccountDto)
         {
+
             createAccountDto.UserId = GetUserIdFromToken();
             var result = await _accountService.AutoCreateAccount(createAccountDto);
             if (result.Success)
@@ -142,6 +168,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] Account account)
         {
+            string xmlString = XmlHelper.SerializeToXml(account);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\AccountAdd.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await _accountService.Update(account);
             if (result.Success)
                 return Ok(result);
@@ -152,6 +192,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpPut("updateaccountstatus")]
         public async Task<IActionResult> UpdateAccountStatus([FromBody] UpdateStatusDto updateStatusDto)
         {
+            string xmlString = XmlHelper.SerializeToXml(updateStatusDto);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\UpdateStatusDto.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await _accountService.UpdateAccountStatus(updateStatusDto);
             if (result.Success)
                 return Ok(result);
@@ -162,6 +216,20 @@ namespace Bank.XMLWebApi.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] Account account)
         {
+            string xmlString = XmlHelper.SerializeToXml(account);
+
+            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\AccountAdd.xsd";
+
+
+            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
+            if (!isValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "XML validation failed",
+                    Errors = errors
+                });
+            }
             var result = await _accountService.Delete(account);
             if (result.Success)
                 return Ok(result);

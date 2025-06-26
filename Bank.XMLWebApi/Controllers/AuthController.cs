@@ -7,8 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bank.XMLWebApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("2.0")]
+    [ApiVersion("1.0")]
+    [Consumes("application/xml")]
+    [Produces("application/xml")]
     public class AuthController : BaseController
     {
         private IAuthService _authService;
@@ -21,8 +25,7 @@ namespace Bank.XMLWebApi.Controllers
         }
 
         [HttpPost("login")]
-        [Consumes("application/xml")]
-        [Produces("application/xml")]
+
         public async Task<ActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
             var result = await _authService.LoginAndCreateToken(userLoginDto);
@@ -44,8 +47,6 @@ namespace Bank.XMLWebApi.Controllers
         }
 
         [HttpPost("register")]
-        [Consumes("application/xml")]
-        [Produces("application/xml")]
         public async Task<ActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
             var result = await _authService.Register(userRegisterDto);
@@ -69,11 +70,11 @@ namespace Bank.XMLWebApi.Controllers
             var successResult = new SuccessResult("Authentication successful.");
             return Ok(successResult);
         }
-
         [Authorize(Roles = "Customer,Administrator")]
         [HttpPost("logout")]
-        public ActionResult Logout()
-        {
+        [MapToApiVersion("2.0")]
+        public ActionResult LogoutV2() 
+        { 
             int userId = GetUserIdFromToken();
             _authService.Logout(userId);
 
@@ -91,6 +92,30 @@ namespace Bank.XMLWebApi.Controllers
             var result = new SuccessResult("Logout completed successfully.");
             return Ok(result);
         }
+        [Authorize(Roles = "Customer,Administrator")]
+        [HttpPost("logout")]
+        [MapToApiVersion("1.0")]
+        public ActionResult LogoutV1() 
+        {
+            int userId = GetUserIdFromToken();
+
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.UtcNow.AddDays(-1),
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Path = "/"
+            };
+
+            Response.Cookies.Append("AuthToken", "", cookieOptions);
+
+            var result = new SuccessResult("Logout completed successfully.");
+            return Ok(result);
+        }
+
+  
+        /* The memory cache is removed by going to the Logout API. There was no such situation in the previous version. */
     }
 
 

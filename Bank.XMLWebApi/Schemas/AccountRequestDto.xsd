@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="AccountRequestDto">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Id" type="xs:int" />
+				<xs:element name="FullName" type="xs:string" />
+				<xs:element name="AccountNumber">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:length value="8"/>
+							<xs:pattern value="\d{8}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="ApplicationDate" type="xs:dateTime" />
+				<xs:element name="Status" type="xs:string" />
+				<xs:element name="PhoneNumber" type="xs:string" />
+				<xs:element name="Email" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

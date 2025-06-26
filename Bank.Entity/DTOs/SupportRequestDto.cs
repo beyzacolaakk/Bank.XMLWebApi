@@ -4,28 +4,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Bank.Entity.DTOs
 {
-    public class SupportRequestDto : IDto
+    [XmlRoot("SupportRequestDto")]
+    public class SupportRequestDto
     {
-        public int Id { get; set; }  // Usually assigned by the backend; can be removed if not needed during creation.
+        [XmlElement("id")]
+        public int Id { get; set; }
 
+        [XmlElement("userId")]
         public int UserId { get; set; }
 
+        [XmlElement("subject")]
         public string Subject { get; set; } = string.Empty;
 
+        [XmlElement("message")]
         public string Message { get; set; } = string.Empty;
 
-        public string? Category { get; set; }
+        [XmlElement("status")]
+        public string? Status { get; set; }
 
-        public string? FullName { get; set; }
-
-        public DateTime? Date { get; set; }  // Typically assigned by the backend.
-
+        [XmlElement("response")]
         public string? Response { get; set; }
 
-        public string? Status { get; set; }
+        [XmlElement("category")]
+        public string? Category { get; set; }
+
+        [XmlElement("fullName")]
+        public string? FullName { get; set; }
+
+        [XmlElement("date")]
+        public DateTime? Date { get; set; }
     }
 
 }

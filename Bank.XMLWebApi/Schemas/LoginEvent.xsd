@@ -1,23 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
 
-	<!-- Kök eleman: LoginEvent listesi -->
-	<xs:element name="ArrayOfLoginEvent">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="LoginEvent" type="LoginEventType" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xs:element name="LoginEvent" type="LoginEventType"/>
 
-	<!-- Tekil LoginEvent tipi -->
 	<xs:complexType name="LoginEventType">
 		<xs:sequence>
-			<xs:element name="Id" type="xs:int"/>
-			<xs:element name="UserId" type="xs:int"/>
-			<xs:element name="IpAddress" type="xs:string"/>
-			<xs:element name="IsSuccessful" type="xs:boolean"/>
-			<xs:element name="Timestamp" type="xs:dateTime"/>
+			<xs:element name="id" type="xs:int"/>
+			<xs:element name="userId" type="xs:int"/>
+			<xs:element name="ipAddress" type="xs:string">
+
+			</xs:element>
+			<xs:element name="isSuccessful" type="xs:boolean"/>
+			<xs:element name="timestamp" type="xs:dateTime"/>
 		</xs:sequence>
 	</xs:complexType>
 

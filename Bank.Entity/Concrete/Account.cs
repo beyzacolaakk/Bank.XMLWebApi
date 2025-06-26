@@ -9,23 +9,31 @@ using System.Xml.Serialization;
 
 namespace Bank.Entity.Concrete
 {
-    public class Account : IEntity
+    [XmlRoot("Account")]
+    public class Account:IEntity
     {
-
+        [XmlElement("Id")]
         public int Id { get; set; }
 
+        [XmlElement("UserId")]
         public int UserId { get; set; }
 
-        public string AccountNumber { get; set; } = string.Empty;
+        [XmlElement("AccountNumber")]
+        public string AccountNumber { get; set; }
 
-        public string AccountType { get; set; } = string.Empty;
+        [XmlElement("AccountType")]
+        public string AccountType { get; set; }
 
+        [XmlElement("Balance")]
         public decimal Balance { get; set; }
 
+        [XmlElement("Currency")]
         public string Currency { get; set; } = "TRY";
 
+        [XmlElement("Status")]
         public string? Status { get; set; }
 
+        [XmlElement("CreatedDate")]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

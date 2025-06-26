@@ -1,8 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<!-- Değişiklik: Kök eleman artık SupportRequest ve tipi SupportRequestType -->
-	<xs:element name="Account" type="AccountType" />
 
+	<!-- KÖK ELEMAN -->
+	<xs:element name="ArrayOfAccount">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Account" type="AccountType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- HESAP TİPİ -->
 	<xs:complexType name="AccountType">
 		<xs:sequence>
 			<xs:element name="Id" type="xs:int"/>
@@ -28,4 +36,5 @@
 			<xs:element name="CreatedDate" type="xs:dateTime"/>
 		</xs:sequence>
 	</xs:complexType>
+
 </xs:schema>

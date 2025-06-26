@@ -14,9 +14,6 @@ namespace Bank.DataAccess.EntityFramework
 {
     public class EfAccountDal : EfEntityRepositoryBase<Account, BankContext>, IAccountDal
     {
-        public EfAccountDal(BankContext context)
-        {
-        }
 
         public async Task<List<AccountDto>> GetAccountsByUserIdAsync(int userId)
         {

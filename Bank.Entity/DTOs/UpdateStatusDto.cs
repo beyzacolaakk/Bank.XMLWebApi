@@ -8,12 +8,17 @@ using System.Threading.Tasks;
 
 namespace Bank.Entity.DTOs
 {
-    public class UpdateStatusDto : IDto
-    {
+    using System.Xml.Serialization;
 
+    [XmlRoot("UpdateStatusDto")]
+    public class UpdateStatusDto:IDto
+    {
+        [XmlElement("id")]
         public int? Id { get; set; }
 
+        [XmlElement("status")]
         public string? Status { get; set; }
     }
+
 
 }

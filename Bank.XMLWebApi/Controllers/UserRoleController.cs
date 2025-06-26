@@ -8,6 +8,8 @@ namespace Bank.XMLWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Consumes("application/xml")]
+    [Produces("application/xml")]
     public class UserRoleController : ControllerBase
     {
         private readonly IUserRoleService _userRoleService;
