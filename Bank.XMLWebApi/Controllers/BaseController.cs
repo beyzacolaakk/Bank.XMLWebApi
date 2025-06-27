@@ -21,14 +21,14 @@ namespace Bank.XMLWebApi.Controllers
             try
             {
                 var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+                var Token = handler.ReadToken(token) as JwtSecurityToken;
 
-                if (jsonToken == null)
+                if (Token == null)
                 {
                     return 0;
                 }
 
-                var userIdClaim = jsonToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var userIdClaim = Token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
                 if (int.TryParse(userIdClaim, out int userId))
                 {

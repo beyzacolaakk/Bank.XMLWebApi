@@ -71,13 +71,13 @@ namespace Bank.XMLWebApi.Controllers
                         xmlWriter.WriteEndElement();
                     }
 
-                    xmlWriter.WriteEndElement(); // </Branches>
+                    xmlWriter.WriteEndElement(); 
                     xmlWriter.WriteEndDocument();
 
-                    xmlWriter.Flush(); // 💥 ÖNEMLİ
+                    xmlWriter.Flush(); 
                 }
 
-                xml = stringWriter.ToString(); // Bu artık dolu olacak
+                xml = stringWriter.ToString(); 
             }
             var wrapper = XmlConverter.Deserialize<BranchesWrapper>(xml);
             var  bra= new SuccessDataResult<List<BranchDto>>(wrapper.Items, "Branches retrieved successfully"); 
@@ -93,7 +93,7 @@ namespace Bank.XMLWebApi.Controllers
             var result = await _branchService.GetById(id);
             var res=XmlConverter.Serialize(result.Data);
             if (result.Success)
-                return Content(res, "application/xml");
+                return Ok(result);
             return BadRequest(result);
         }
 

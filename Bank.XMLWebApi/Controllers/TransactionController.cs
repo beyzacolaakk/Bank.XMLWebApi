@@ -42,7 +42,7 @@ namespace Bank.XMLWebApi.Controllers
             var result = await _transactionService.GetById(id);
             string xmlString = XmlHelper.SerializeToXml(result.Data);
             if (result.Success)
-                return Content(xmlString, "application/xml");
+                return Ok(result);
             return BadRequest(result);
         }
 

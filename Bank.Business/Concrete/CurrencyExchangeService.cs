@@ -43,7 +43,7 @@ namespace Bank.Business.Concrete
                 {
                     if (property.Value.ValueKind == JsonValueKind.Number && property.Value.TryGetDecimal(out var rateValue))
                     {
-                        // Tersini alıyoruz: 1 Döviz birimi kaç TRY eder
+                     
                         if (rateValue != 0)
                             rates[property.Name] = Math.Round(1 / rateValue, 4);
                         else
@@ -57,7 +57,7 @@ namespace Bank.Business.Concrete
 
                 DateTime date = root.TryGetProperty("date", out var dateProp) ? dateProp.GetDateTime() : DateTime.Now;
 
-                // Dictionary'den XML uyumlu listeye çeviriyoruz
+                
                 var ratesList = rates.Select(kv => new RateItem
                 {
                     Currency = kv.Key,

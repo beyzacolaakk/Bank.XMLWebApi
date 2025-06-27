@@ -19,6 +19,6 @@ namespace Bank.Core.Utilities.Results
         }
 
 
-        public T Data { get; }
+        public T Data { get; set; }
     }
 }

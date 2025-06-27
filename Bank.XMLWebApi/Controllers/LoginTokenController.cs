@@ -10,6 +10,8 @@ namespace Bank.XMLWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Consumes("application/xml")]
+    [Produces("application/xml")]
     public class LoginTokenController : ControllerBase
     {
         private readonly ILoginTokenService _loginTokenService;
@@ -36,7 +38,7 @@ namespace Bank.XMLWebApi.Controllers
             var result = await _loginTokenService.GetById(id);
             string xmlString = XmlHelper.SerializeToXml(result.Data);
             if (result.Success)
-                return Content(xmlString.ToString(), "application/xml");
+                return Ok(result);
             return BadRequest(result);
         }
 

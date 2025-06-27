@@ -8,8 +8,8 @@
 				<xs:element name="cardType">
 					<xs:simpleType>
 						<xs:restriction base="xs:string">
-							<xs:enumeration value="bank" />
-							<xs:enumeration value="credit" />
+							<xs:enumeration value="Bank" />
+							<xs:enumeration value="Credit" />
 						</xs:restriction>
 					</xs:simpleType>
 				</xs:element>

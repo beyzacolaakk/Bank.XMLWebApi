@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using Bank.Entity.Concrete;
+using System.Xml;
 
 namespace Bank.XMLWebApi.Helpers
 {

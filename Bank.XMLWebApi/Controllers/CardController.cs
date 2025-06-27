@@ -2,6 +2,7 @@
 
 using Bank.Business.Abstract;
 using Bank.Core.Extensions;
+using Bank.Core.Utilities.Results;
 using Bank.Core.Utilities.XMLSerializeToXML;
 using Bank.Entity.Concrete;
 using Bank.Entity.DTOs;
@@ -56,7 +57,7 @@ namespace Bank.XMLWebApi.Controllers
             {
                 while (reader.Read())
                 {
-                    // Sadece elementlerin başladığı noktaları işliyoruz
+      
                     if (reader.NodeType == XmlNodeType.Element)
                     {
                         switch (reader.Name)
@@ -67,11 +68,12 @@ namespace Bank.XMLWebApi.Controllers
                             case "cardType":
                                 cardType = reader.ReadElementContentAsString();
                                 break;
+                 
                             case "limit":
                                 if (reader.IsEmptyElement)
                                 {
                                     limit = null;
-                                    reader.Read(); // boş elementi atla
+                                    reader.Read(); 
                                 }
                                 else
                                 {
@@ -90,21 +92,19 @@ namespace Bank.XMLWebApi.Controllers
             }
 
             string partialXml = $@"<?xml version=""1.0"" encoding=""utf-8""?>
-<CardPartial>
+<CardRequestDto>
     <Id>{idVal}</Id>
     <CardType>{System.Security.SecurityElement.Escape(cardType)}</CardType>
     <Limit>{(limit.HasValue ? limit.Value.ToString() : "")}</Limit>
     <Status>{System.Security.SecurityElement.Escape(status)}</Status>
     <ExpirationDate>{expirationDate.ToString("o")}</ExpirationDate>
-</CardPartial>";
-
-            return Content(partialXml, "application/xml");
+</CardRequestDto>";
+            var cardreq=XmlConverter.Deserialize<CardRequestDto>(partialXml);
+            var res = new SuccessDataResult<CardRequestDto>(cardreq, result.Message);
+            if (result.Success)
+                return Ok(res);
+            return BadRequest(result);
         }
-
-
-
-
-
 
         [Authorize(Roles = "Customer,Administrator")]
         [HttpPost("createautomaticcard")]

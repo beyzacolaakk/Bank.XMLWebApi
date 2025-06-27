@@ -55,7 +55,7 @@ namespace Bank.XMLWebApi.Controllers
             );
 
             if (result.Success)
-                return Content(xml.ToString(), "application/xml");
+                return Ok(result);
             return BadRequest(result);
         }
 

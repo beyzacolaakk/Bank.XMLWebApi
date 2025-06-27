@@ -53,6 +53,7 @@ namespace Bank.XMLWebApi.Controllers
         }
 
 
+        [Authorize(Roles = "Customer,Administrator")]
         [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetByIdAsXml([FromRoute] int id)
         {
@@ -76,9 +77,10 @@ namespace Bank.XMLWebApi.Controllers
                     Errors = errors
                 });
             }
-
+            var cak = XmlConverter.Deserialize<AccountRequestDto>(xmlString);
+            result.Data = cak;
             if (result.Success)
-                return Content(xmlString, "application/xml");
+                return Ok(result);
             return BadRequest(result);
         }
 
@@ -126,9 +128,10 @@ namespace Bank.XMLWebApi.Controllers
             int userId = GetUserIdFromToken();
             var result = await _accountService.GetAssetsAsync(userId);
             string xmlString = XmlHelper.SerializeToXml(result.Data);
+            result.Data= XmlConverter.Deserialize<AssetsDto>(xmlString);
             if (result.Success)
-                return Content(xmlString, "application/xml");
-            return Content(result.Message, "application/xml");
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [Authorize(Roles = "Administrator")]
@@ -148,8 +151,8 @@ namespace Bank.XMLWebApi.Controllers
             var result = await _accountService.GetRequestCounts();
             string xmlString = XmlHelper.SerializeToXml(result.Data);
             if (result.Success)
-                return Content(xmlString, "application/xml");
-            return Content(result.Message, "application/xml");
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [Authorize(Roles = "Customer,Administrator")]

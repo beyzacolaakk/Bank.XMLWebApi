@@ -9,13 +9,6 @@ namespace Bank.Core.Extensions
 {
     public static class XmlConverter
     {
-        public static string ConvertToXml<T>(T obj)
-        {
-            var serializer = new XmlSerializer(typeof(T));
-            using var stringWriter = new StringWriter();
-            serializer.Serialize(stringWriter, obj);
-            return stringWriter.ToString();
-        }
         public static string Serialize<T>(T obj)
         {
             if (obj == null)

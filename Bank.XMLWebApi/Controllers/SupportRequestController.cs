@@ -49,8 +49,9 @@ namespace Bank.XMLWebApi.Controllers
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var result = await _supportRequestService.GetById(id);
-            var xml = XmlConverter.Serialize(result.Data);
-            return Content(xml, "application/xml");
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [Authorize(Roles = "Customer,Administrator")]
@@ -192,7 +193,7 @@ namespace Bank.XMLWebApi.Controllers
                 return NotFound("No matching support requests found.");
 
             XmlDocument filteredXml = new XmlDocument();
-            XmlElement root = filteredXml.CreateElement("SupportRequests");
+            XmlElement root = filteredXml.CreateElement("SupportRequestList");
             filteredXml.AppendChild(root);
 
             foreach (XmlNode node in filteredNodes)
@@ -200,7 +201,7 @@ namespace Bank.XMLWebApi.Controllers
                 XmlNode imported = filteredXml.ImportNode(node, true);
                 root.AppendChild(imported);
             }
-
+            
             return Content(filteredXml.OuterXml, "application/xml");
         }
 

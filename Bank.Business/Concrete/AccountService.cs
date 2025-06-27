@@ -207,6 +207,10 @@ namespace Bank.Business.Concrete
  
         public async Task<IDataResult<AssetsDto>> GetAssetsAsync(int userId)
         {
+            if (userId ==0)
+            {
+                return new ErrorDataResult<AssetsDto>(Messages.InvalidInformation);
+            }
             var accounts = await _accountDal.GetAccountsByUserIdAsync(userId);
             var cards = await _cardService.GetCardsByUserIdAsync(userId);
 
