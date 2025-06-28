@@ -48,7 +48,7 @@ namespace Bank.Business.Concrete
                 CVV = GenerateCvv(),
                 CardType = createCardDto.CardType,
                 ExpirationDate = DateTime.UtcNow.AddYears(3),
-                Limit = createCardDto.CardType == "Credit Card" ? 5000 : (int?)null,
+                Limit = createCardDto.CardType == "Credit" ? 5000 : (int?)null,
                 Status = "Pending",
             };
 

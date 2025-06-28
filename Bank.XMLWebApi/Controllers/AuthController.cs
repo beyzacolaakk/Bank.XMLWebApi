@@ -25,7 +25,6 @@ namespace Bank.XMLWebApi.Controllers
         }
 
         [HttpPost("login")]
-
         public async Task<ActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
             var result = await _authService.LoginAndCreateToken(userLoginDto);
@@ -41,7 +40,7 @@ namespace Bank.XMLWebApi.Controllers
                 Expires = result.Data.Token.Expiration
             };
 
-            Response.Cookies.Append("AuthToken", result.Data.Token.Token, cookieOptions);
+            Response.Cookies.Append("UserJwtToken", result.Data.Token.Token, cookieOptions);
 
             return Ok(result.Data.Token);
         }
@@ -59,7 +58,7 @@ namespace Bank.XMLWebApi.Controllers
         [HttpGet("authenticate")]
         public ActionResult Authenticate()
         {
-            var token = Request.Cookies["AuthToken"];
+            var token = Request.Cookies["UserJwtToken"];
 
             if (string.IsNullOrEmpty(token))
             {
@@ -87,7 +86,7 @@ namespace Bank.XMLWebApi.Controllers
                 Path = "/"
             };
 
-            Response.Cookies.Append("AuthToken", "", cookieOptions);
+            Response.Cookies.Append("UserJwtToken", "", cookieOptions);
 
             var result = new SuccessResult("Logout completed successfully.");
             return Ok(result);
@@ -108,7 +107,7 @@ namespace Bank.XMLWebApi.Controllers
                 Path = "/"
             };
 
-            Response.Cookies.Append("AuthToken", "", cookieOptions);
+            Response.Cookies.Append("UserJwtToken", "", cookieOptions); 
 
             var result = new SuccessResult("Logout completed successfully.");
             return Ok(result);

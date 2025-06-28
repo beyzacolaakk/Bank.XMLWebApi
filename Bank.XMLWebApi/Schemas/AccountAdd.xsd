@@ -39,7 +39,7 @@
 					<xs:simpleType>
 						<xs:restriction base="xs:string">
 							<!-- Sadece TRY, USD, EUR gibi kodlara izin verilebilir -->
-							<xs:enumeration value="TRY"/>
+							<xs:enumeration value="TL"/>
 							<xs:enumeration value="USD"/>
 							<xs:enumeration value="EUR"/>
 						</xs:restriction>
@@ -50,7 +50,7 @@
 					<xs:simpleType>
 						<xs:restriction base="xs:string">
 							<xs:enumeration value="Active"/>
-							<xs:enumeration value="Inactive"/>
+							<xs:enumeration value="Pending"/>
 							<xs:enumeration value="Closed"/>
 						</xs:restriction>
 					</xs:simpleType>

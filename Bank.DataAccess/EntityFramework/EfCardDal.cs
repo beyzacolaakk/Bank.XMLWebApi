@@ -26,7 +26,7 @@ namespace Bank.DataAccess.EntityFramework
             using (var context = new BankContext())
             {
                 return await context.Cards
-                    .Where(c => c.UserId == userId && c.CardType == "Credit Card")
+                    .Where(c => c.UserId == userId && c.CardType == "Credit")
                     .Select(c => new CardDto
                     {
                         CardNumber = c.CardNumber,

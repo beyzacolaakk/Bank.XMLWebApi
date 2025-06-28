@@ -69,7 +69,8 @@ namespace Bank.Business.Concrete
                 AccountType = accountCreateDto.AccountType,
                 Balance = 0,
                 Status = "Pending",
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.Now,
+                Currency= accountCreateDto.Currency ?? "TL"
             };
 
             await _accountDal.Add(account);
@@ -127,7 +128,7 @@ namespace Bank.Business.Concrete
                     senderCard.Limit -= amount;
                     receiver.Balance += amount;
 
-                    //await _cardService.Update(senderCard);
+                    await _cardService.Update(senderCard);
                     await _accountDal.Update(receiver);
 
                     return new SuccessDataResult<decimal>(senderCard.Limit!.Value, Messages.MoneyTransferSuccessful);

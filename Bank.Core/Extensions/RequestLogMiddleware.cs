@@ -82,7 +82,7 @@ namespace Bank.Core.Extensions
 
         private int TokendanIdAl(HttpContext context)
         {
-            var token = context.Request.Cookies["AuthToken"];
+            var token = context.Request.Cookies["UserJwtToken"];
             if (string.IsNullOrEmpty(token))
                 return 0;
 
