@@ -49,6 +49,8 @@
 						<xs:enumeration value="Security"/>
 						<xs:enumeration value="Mobile Application"/>
 						<xs:enumeration value="Card Transaction"/>
+						<xs:enumeration value="Money Transfer"/>
+						<xs:enumeration value="Account Transaction"/>
 						<xs:enumeration value="Other"/>
 					</xs:restriction>
 				</xs:simpleType>

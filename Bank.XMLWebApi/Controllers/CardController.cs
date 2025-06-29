@@ -21,10 +21,11 @@ namespace Bank.XMLWebApi.Controllers
     public class CardController : BaseController
     {
         private readonly ICardService _cardService;
-
-        public CardController(ICardService cardService)
+        private readonly IUserService _userService;
+        public CardController(ICardService cardService, IUserService userService)
         {
             _cardService = cardService;
+            _userService = userService;
         }
         [Authorize(Roles = "Administrator")]
         [HttpGet("getall")]
@@ -41,7 +42,7 @@ namespace Bank.XMLWebApi.Controllers
         public async Task<IActionResult> GetCardPartialXml([FromRoute] int id)
         {
             var result = await _cardService.GetById(id);
-
+            var result2 = await _userService.GetUserDetails(result.Data.UserId);
             if (!result.Success || result.Data == null)
                 return BadRequest(result);
 
@@ -91,11 +92,16 @@ namespace Bank.XMLWebApi.Controllers
                 }
             }
 
+            var limitPart = limit.HasValue
+                ? $"<Limit>{limit.Value}</Limit>"
+                : @"<Limit xsi:nil=""true"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" />";
+
             string partialXml = $@"<?xml version=""1.0"" encoding=""utf-8""?>
 <CardRequestDto>
     <Id>{idVal}</Id>
+    <FullName>{result2.Data.FullName}</FullName>
     <CardType>{System.Security.SecurityElement.Escape(cardType)}</CardType>
-    <Limit>{(limit.HasValue ? limit.Value.ToString() : "")}</Limit>
+    {limitPart}
     <Status>{System.Security.SecurityElement.Escape(status)}</Status>
     <ExpirationDate>{expirationDate.ToString("o")}</ExpirationDate>
 </CardRequestDto>";
@@ -159,6 +165,7 @@ namespace Bank.XMLWebApi.Controllers
         {
 
             string xmlString = XmlHelper.SerializeToXml(card);
+
 
             string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\Card.xsd";
 

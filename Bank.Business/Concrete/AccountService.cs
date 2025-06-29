@@ -149,7 +149,7 @@ namespace Bank.Business.Concrete
 
             try
             {
-                if (depositWithdrawDto.TransactionType == "Withdrawal")
+                if (depositWithdrawDto.TransactionType == "Withdraw")
                 {
                     if (senderResult.Data.Balance < depositWithdrawDto.Amount)
                         return new ErrorDataResult<decimal>(Messages.MoneyTransferFailed);
@@ -159,7 +159,7 @@ namespace Bank.Business.Concrete
                 {
                     senderResult.Data.Balance += depositWithdrawDto.Amount;
                 }
-
+               
                 await _accountDal.Update(senderResult.Data);
 
                 return new SuccessDataResult<decimal>(senderResult.Data.Balance, Messages.MoneyTransferSuccessful);

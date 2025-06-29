@@ -1,4 +1,6 @@
 ﻿using Bank.Business.Abstract;
+using Bank.Business.Concrete;
+using Bank.Core.Entities.Concrete;
 using Bank.Core.Extensions;
 using Bank.Core.Utilities.XMLSerializeToXML;
 using Bank.Entity.Concrete;
@@ -18,9 +20,10 @@ namespace Bank.XMLWebApi.Controllers
     {
         private readonly ISupportRequestService _supportRequestService;
 
-        public SupportRequestController(ISupportRequestService supportRequestService)
+        public SupportRequestController(ISupportRequestService supportRequestService) 
         {
             _supportRequestService = supportRequestService;
+
         }
         [Authorize(Roles = "Administrator")]
         [HttpGet("getall")]
@@ -112,26 +115,20 @@ namespace Bank.XMLWebApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-
+        [Authorize(Roles = "Administrator")]
+        [HttpPut("updatesupportrequest")]
+        public async Task<IActionResult> DestekTalebiDurumGuncelle([FromBody] SupportRequestUpdateDto destekTalebiGuncelle)
+        {
+            var sonuc = await _supportRequestService.UpdateSupportRequestStatus(destekTalebiGuncelle);
+            if (sonuc.Success)
+                return Ok(sonuc);
+            return BadRequest(sonuc);
+        }
 
         [Authorize(Roles = "Customer,Administrator")]
         [HttpPost("createsupportrequest")]
         public async Task<IActionResult> CreateSupportRequest([FromBody] SupportRequestDto supportRequestDto)
         {
-            string xmlString = XmlHelper.SerializeToXml(supportRequestDto);
-
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\SupportRequestDto.xsd";
-
-
-            bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
-            if (!isValid)
-            {
-                return BadRequest(new
-                {
-                    Message = "XML validation failed",
-                    Errors = errors
-                });
-            }
             supportRequestDto.UserId = GetUserIdFromToken();
             var result = await _supportRequestService.CreateSupportRequest(supportRequestDto);
             return result.Success ? Ok(result) : BadRequest(result);
@@ -150,7 +147,7 @@ namespace Bank.XMLWebApi.Controllers
             }
             return result.Success ? Ok(result) : BadRequest(result);
         }
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Customer,Administrator")]
         [HttpGet("filter")]
         public async Task<IActionResult> Filter([FromQuery] string status = "all", [FromQuery] string search = "")
         {

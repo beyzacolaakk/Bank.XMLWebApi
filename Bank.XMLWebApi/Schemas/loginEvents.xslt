@@ -7,7 +7,7 @@
 	<xsl:template match="/">
 		<html>
 			<head>
-				<title>Kullanıcı Giriş Kayıtları</title>
+				<title>User Login Records</title>
 				<style>
 					table { border-collapse: collapse; width: 100%; }
 					th, td { border: 1px solid #ddd; padding: 8px; }
@@ -19,7 +19,7 @@
 			<body>
 				<div class="card mt-4">
 					<div class="card-header">
-						<h5>Kullanıcı Giriş Kayıtları</h5>
+						<h5>User Login Records</h5>
 					</div>
 					<div class="card-body">
 						<div class="table-responsive">
@@ -27,14 +27,22 @@
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Kullanıcı ID</th>
-										<th>IP Adresi</th>
-										<th>Durum</th>
-										<th>Zaman</th>
+										<th>
+											User ID
+										</th>
+										<th>
+											IP Address
+										</th>
+										<th>
+											Situation
+										</th>
+										<th>
+											Time
+										</th>
 									</tr>
 								</thead>
 								<tbody>
-									<!-- ✅ DOĞRU XPATH İLE GÜNCELLENDİ -->
+								
 									<xsl:for-each select="ArrayOfLoginEvent/LoginEvent">
 										<tr>
 											<td>
@@ -49,10 +57,12 @@
 											<td>
 												<xsl:choose>
 													<xsl:when test="isSuccessful='true'">
-														<span class="badge-success">Başarılı</span>
+														<span class="badge-success">Successful</span>
 													</xsl:when>
 													<xsl:otherwise>
-														<span class="badge-danger">Başarısız</span>
+														<span class="badge-danger">
+															Unsuccessful
+														</span>
 													</xsl:otherwise>
 												</xsl:choose>
 											</td>

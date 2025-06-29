@@ -55,13 +55,6 @@ namespace Bank.Business.Concrete
                 Category = dto.Category
             };
 
-            string xml = XmlConverter.Serialize(supportRequest);
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\SupportRequest.xsd";
-
-            if (!XmlValidator.ValidateXml(xml, xsdPath, out var errors))
-            {
-                return new ErrorResult("XML validation failed:\n" + string.Join("\n", errors));
-            }
 
             await _supportRequestDal.Add(supportRequest);
             return new SuccessResult(Messages.AddSuccessful);

@@ -153,7 +153,7 @@ namespace Bank.Business.Concrete
             IResult transferResult;
             int? senderId = null;
 
-            if (withdrawDepositDto.TransactionType == "card")
+            if (withdrawDepositDto.OperationType == "card")
             {
                 var senderCard = await _cardService.GetByCardNumber(withdrawDepositDto.AccountId);
                 if (senderCard == null || senderCard.Data == null)
@@ -193,7 +193,7 @@ namespace Bank.Business.Concrete
                 Status = transferResult.Success ? "Successful Transfer" : "Failed Transfer"
             };
 
-            if (withdrawDepositDto.TransactionType == "card")
+            if (withdrawDepositDto.OperationType == "card")
             {
                 transaction.CardId = senderId;
                 transaction.SenderAccountId = null;

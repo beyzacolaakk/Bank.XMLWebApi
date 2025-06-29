@@ -95,7 +95,6 @@ namespace Bank.XMLWebApi.Controllers
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var result = await _limitIncreaseService.GetCardLimitRequestById(id);
-            string xmlString = XmlHelper.SerializeToXml(result.Data);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);

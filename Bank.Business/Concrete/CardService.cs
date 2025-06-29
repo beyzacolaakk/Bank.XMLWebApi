@@ -134,7 +134,7 @@ namespace Bank.Business.Concrete
 
             try
             {
-                if (depositWithdrawDto.TransactionType == "Withdrawal")
+                if (depositWithdrawDto.TransactionType == "Withdraw")
                 {
                     if (sender.Data.Limit < depositWithdrawDto.Amount)
                         return new ErrorDataResult<decimal>("Insufficient balance in sender account.");
