@@ -37,8 +37,7 @@ namespace Bank.XMLWebApi.Controllers
         public async Task<IActionResult> AddLimitIncrease([FromBody] LimitIncreaseRequestDto limitIncrease)
         {
             string xmlString = XmlHelper.SerializeToXml(limitIncrease);
-
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\LimitIncreaseRequestDto.xsd";
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "LimitIncreaseRequestDto.xsd");
 
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
@@ -62,7 +61,8 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(limitIncrease);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\LimitIncreaseCreateDto.xsd";
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "LimitIncreaseCreateDto.xsd");
+
 
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);

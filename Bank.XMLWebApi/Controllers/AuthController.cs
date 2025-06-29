@@ -114,7 +114,6 @@ namespace Bank.XMLWebApi.Controllers
         }
 
   
-        /* The memory cache is removed by going to the Logout API. There was no such situation in the previous version. */
     }
 
 

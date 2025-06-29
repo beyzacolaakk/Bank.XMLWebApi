@@ -119,8 +119,8 @@ namespace Bank.XMLWebApi.Controllers
             createCardDto.UserId = GetUserIdFromToken();
             string xmlString = XmlHelper.SerializeToXml(createCardDto);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\CreateCardDto.xsd";
 
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "CreateCardDto.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -167,8 +167,8 @@ namespace Bank.XMLWebApi.Controllers
             string xmlString = XmlHelper.SerializeToXml(card);
 
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\Card.xsd";
 
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Card.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -192,8 +192,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(card);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\Card.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Card.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -216,8 +215,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(card);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\Card.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Card.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -240,9 +238,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(updateStatusDto);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\UpdateStatusDto.xsd";
-
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "UpdateStatusDto.xsd");
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
             {

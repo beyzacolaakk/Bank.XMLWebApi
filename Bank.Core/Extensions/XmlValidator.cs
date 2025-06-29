@@ -44,10 +44,9 @@ namespace Bank.Core.Extensions
 
             try
             {
-                string dtdFileName = Path.GetFileName(dtdPath); // sadece dosya adı
+                string dtdFileName = Path.GetFileName(dtdPath); 
                 string dtdDirectory = Path.GetDirectoryName(dtdPath)!;
 
-                // XML declaration'ı ve DTD'yi başa ekle
                 string xmlWithDoctype = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE Transaction SYSTEM \"{dtdFileName}\">\n{xmlContent}";
 
                 var settings = new XmlReaderSettings

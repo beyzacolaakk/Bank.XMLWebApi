@@ -73,8 +73,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(supportRequest);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\SupportRequest.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "SupportRequest.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -98,8 +97,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(supportRequest);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\SupportRequest.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "SupportRequest.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)

@@ -8,6 +8,7 @@ using Bank.Entity.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace Bank.XMLWebApi.Controllers
 {
@@ -64,8 +65,7 @@ namespace Bank.XMLWebApi.Controllers
 
             string xmlString = XmlHelper.SerializeToXml(result.Data);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\AccountRequestDto.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "AccountRequestDto.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
 
@@ -102,7 +102,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(account);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\AccountAdd.xsd";
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "AccountAdd.xsd");
 
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
@@ -173,8 +173,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(account);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\AccountAdd.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "AccountAdd.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -197,8 +196,8 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(updateStatusDto);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\UpdateStatusDto.xsd";
 
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "UpdateStatusDto.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -221,8 +220,8 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(account);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\AccountAdd.xsd";
 
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "AccountAdd.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)

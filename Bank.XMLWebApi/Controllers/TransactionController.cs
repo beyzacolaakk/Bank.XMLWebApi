@@ -98,8 +98,7 @@ namespace Bank.XMLWebApi.Controllers
                 }
             }
 
-            string dtdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\Transaction.DTD";
-
+            string dtdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Transaction.DTD");
             try
             {
                 bool isValid = XmlValidator.ValidateXmlWithDtd(xmlString, dtdPath, out var errors);
@@ -131,8 +130,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(depositWithdrawDto);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\DepositWithdrawDto.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "DepositWithdrawDto.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -156,8 +154,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(transaction);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\Transaction.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Transaction.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
@@ -180,8 +177,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(transaction);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\Transaction.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Transaction.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)

@@ -14,7 +14,7 @@ namespace Bank.Core.Utilities.XMLSerializeToXML
             var serializer = new XmlSerializer(typeof(T));
 
             var ns = new XmlSerializerNamespaces();
-            ns.Add(string.Empty, "http://example.com/account"); // XSD'deki namespace
+            ns.Add(string.Empty, "http://example.com/account"); 
 
             using var stringWriter = new StringWriter();
             serializer.Serialize(stringWriter, obj, ns);

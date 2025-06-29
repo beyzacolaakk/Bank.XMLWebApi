@@ -5,7 +5,7 @@
 		<xs:complexType>
 			<xs:sequence>
 
-				<!-- currentLimit: nullable decimal, 0 ve üzeri -->
+
 				<xs:element name="currentLimit" minOccurs="0">
 					<xs:simpleType>
 						<xs:restriction base="xs:decimal">
@@ -15,7 +15,7 @@
 					</xs:simpleType>
 				</xs:element>
 
-				<!-- requestedLimit: required, > 0 -->
+
 				<xs:element name="requestedLimit">
 					<xs:simpleType>
 						<xs:restriction base="xs:decimal">

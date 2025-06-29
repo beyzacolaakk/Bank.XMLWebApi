@@ -48,8 +48,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(token);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\LoginToken.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "LoginToken.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)

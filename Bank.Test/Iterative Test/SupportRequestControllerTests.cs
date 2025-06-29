@@ -1,4 +1,5 @@
-﻿using Bank.Business.Abstract;
+﻿using Aspire.Hosting.ApplicationModel;
+using Bank.Business.Abstract;
 using Bank.Core.Extensions;
 using Bank.Core.Utilities.Results;
 using Bank.Core.Utilities.XMLSerializeToXML;
@@ -18,6 +19,7 @@ namespace Bank.Test.Iterative_Test
 {
     public class SupportRequestControllerTests
     {
+        string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\SupportRequestDto.xsd";
         private readonly Mock<ISupportRequestService> _mockService;
         private readonly SupportRequestController _controller;
 
@@ -38,9 +40,16 @@ namespace Bank.Test.Iterative_Test
         [InlineData("Bug54", "App crash helphelphelp", "Process", "Mobile Application", "Jane", "2024-06-20T09:00:00", true)]
         [InlineData("Shrt545", "Too short help", "Open", "Other", "", "2024-06-20T09:00:00", false)] // Invalid subject & message
         [InlineData("Valid Subject", "Valid message helphelphelp ", "InvalidStatus", "InvalidCategory", "User X", "2024-06-20T09:00:00", false)]
-        public async Task CreateSupportRequest_IterativeValidation(string subject, string message, string status, string category, string fullName, string dateStr, bool expectedSuccess)
+        public async Task CreateSupportRequest_IterativeValidation(
+            string subject,
+            string message,
+            string status,
+            string category,
+            string fullName,
+            string dateStr,
+            bool expectedSuccess)
         {
-       
+
             var dto = new SupportRequestDto
             {
                 Id = 1,
@@ -54,11 +63,15 @@ namespace Bank.Test.Iterative_Test
                 Date = DateTime.TryParse(dateStr, out var d) ? d : null
             };
 
+            // Arrange - DTO'yu XML'e dönüştürüp XSD doğrulaması yapıyoruz
             string xml = XmlHelper.SerializeToXml(dto);
-            string xsdPath = @"C:\\Users\\fb_go\\source\\repos\\Bank.XMLWebApi\\Bank.XMLWebApi\\Schemas\\SupportRequestDto.xsd";
+
+
+
 
             bool isValid = XmlValidator.ValidateXml(xml, xsdPath, out var errors);
 
+            // Eğer XML doğrulaması başarısızsa, beklenen sonuç da başarısızlık olmalı
             if (!isValid)
             {
                 Assert.False(expectedSuccess);
@@ -66,13 +79,14 @@ namespace Bank.Test.Iterative_Test
                 return;
             }
 
+            // Mock servisin CreateSupportRequest çağrısına başarılı sonuç dönmesini sağlıyoruz
             _mockService.Setup(x => x.CreateSupportRequest(It.IsAny<SupportRequestDto>()))
                 .ReturnsAsync(new SuccessResult("Support request created."));
 
-      
+            // Act - Controller metodunu çağırıyoruz
             var result = await _controller.CreateSupportRequest(dto);
 
-  
+            // Assert - Beklenen sonuca göre test ediyoruz
             if (expectedSuccess)
             {
                 var okResult = Assert.IsType<OkObjectResult>(result);
@@ -81,10 +95,11 @@ namespace Bank.Test.Iterative_Test
             }
             else
             {
-                var badResult = Assert.IsType<BadRequestObjectResult>(result);
-                Assert.NotNull(badResult.Value);
+                var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+                Assert.NotNull(badRequest.Value);
             }
         }
+
     }
 
 

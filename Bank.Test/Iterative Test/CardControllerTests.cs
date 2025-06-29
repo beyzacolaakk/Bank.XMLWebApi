@@ -19,11 +19,12 @@ namespace Bank.Test.Iterative_Test
     {
         private readonly CardController _controller;
         private readonly Mock<ICardService> _cardServiceMock;
-
+        private readonly Mock<IUserService> _userServiceMock;
         public CardControllerTests()
         {
             _cardServiceMock = new Mock<ICardService>();
-            _controller = new CardController(_cardServiceMock.Object)
+            _userServiceMock= new Mock<IUserService>();
+            _controller = new CardController(_cardServiceMock.Object,_userServiceMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -31,117 +32,86 @@ namespace Bank.Test.Iterative_Test
                 }
             };
         }
-
-        [Theory]
-        [InlineData("Credit")]
-        [InlineData("Bank")]
-        public async Task CreateAutomaticCard_ShouldReturnOk_AndGenerateValidXml(string cardType)
+        public class CardRequestTestCase
         {
-   
-            var dto = new CreateCardDto
-            {
-                UserId = 5,
-                CardType = cardType
-            };
-
-     
-            var xml = XmlTestHelper.SerializeToXml(dto);
-            Assert.Contains("CreateCardDto", xml); // kök etiketi içeriyor mu?
-
-  
-            Assert.False(string.IsNullOrWhiteSpace(xml), "Generated XML is empty");
-
-            _cardServiceMock
-                .Setup(x => x.AutoCreateCard(It.IsAny<CreateCardDto>()))
-                .ReturnsAsync(new SuccessResult("Card created automatically."));
-
-      
-            var result = await _controller.CreateAutomaticCard(dto);
-
-    
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var value = Assert.IsAssignableFrom<IResult>(okResult.Value);
-            Assert.True(value.Success);
+            public List<CardRequestDto> MockData { get; set; }
+            public bool ExpectSuccess { get; set; }
+            public bool ExpectEmpty { get; set; }
+            public string ErrorMessage { get; set; }
         }
         [Fact]
-        public async Task GetCardRequests_ShouldReturnOk_WithValidData()
+        public async Task GetCardRequests_IterativeTests()
         {
-    
-            var fakeList = new List<CardRequestDto>
+            var testCases = new List<CardRequestTestCase>
     {
-        new CardRequestDto
+        new CardRequestTestCase
         {
-            Id = 1,
-            FullName = "Gökdeniz Genç",
-            CardType = "Credit Card",
-            Limit = 5000,
-            Date = DateTime.Now,
-            Status = "Pending"
+            MockData = new List<CardRequestDto>
+            {
+                new CardRequestDto
+                {
+                    Id = 1,
+                    FullName = "Ahmet KAYA",
+                    CardType = "Credit Card",
+                    Limit = 5000,
+                    Date = DateTime.Now,
+                    Status = "Pending"
+                }
+            },
+            ExpectSuccess = true,
+            ExpectEmpty = false,
+            ErrorMessage = null
+        },
+        new CardRequestTestCase
+        {
+            MockData = new List<CardRequestDto>(),
+            ExpectSuccess = true,
+            ExpectEmpty = true,
+            ErrorMessage = null
+        },
+        new CardRequestTestCase
+        {
+            MockData = null,
+            ExpectSuccess = false,
+            ExpectEmpty = true,
+            ErrorMessage = "Service error"
         }
     };
 
-            _cardServiceMock.Setup(x => x.GetCardRequests())
-                .ReturnsAsync(new SuccessDataResult<List<CardRequestDto>>(fakeList));
-
-    
-            var result = await _controller.GetCardRequests();
-
-    
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var data = Assert.IsAssignableFrom<IDataResult<List<CardRequestDto>>>(okResult.Value);
-            Assert.True(data.Success);
-            Assert.Single(data.Data);
-        }
-        [Fact]
-        public async Task GetCardRequests_ShouldReturnEmptyList_IfNoRequestsExist()
-        {
-  
-            var emptyList = new List<CardRequestDto>();
-            _cardServiceMock.Setup(x => x.GetCardRequests())
-                .ReturnsAsync(new SuccessDataResult<List<CardRequestDto>>(emptyList));
-
-   
-            var result = await _controller.GetCardRequests();
-
-
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var data = Assert.IsAssignableFrom<IDataResult<List<CardRequestDto>>>(okResult.Value);
-            Assert.True(data.Success);
-            Assert.Empty(data.Data);
-        }
-        [Fact]
-        public async Task GetCardRequests_ShouldReturnBadRequest_IfServiceFails()
-        {
-
-            _cardServiceMock.Setup(x => x.GetCardRequests())
-                .ReturnsAsync(new ErrorDataResult<List<CardRequestDto>>("Service error"));
-
-
-            var result = await _controller.GetCardRequests();
-
-
-            var badRequest = Assert.IsType<BadRequestObjectResult>(result);
-            var data = Assert.IsAssignableFrom<ErrorDataResult<List<CardRequestDto>>>(badRequest.Value);
-            Assert.False(data.Success);
-            Assert.Equal("Service error", data.Message);
-        }
-        [Fact]
-        public void CardRequestDto_Serialization_ShouldProduceValidXml()
-        {
-            var dto = new CardRequestDto
+            foreach (var testCase in testCases)
             {
-                Id =11,
-                FullName = "Test User",
-                CardType = "Credit",
-                Limit = 1000,
-                Date = DateTime.Now,
-                Status = "Active"
-            };
+                if (testCase.ExpectSuccess)
+                {
+                    _cardServiceMock.Setup(x => x.GetCardRequests())
+                        .ReturnsAsync(new SuccessDataResult<List<CardRequestDto>>(testCase.MockData));
+                }
+                else
+                {
+                    _cardServiceMock.Setup(x => x.GetCardRequests())
+                        .ReturnsAsync(new ErrorDataResult<List<CardRequestDto>>(testCase.ErrorMessage));
+                }
 
-            string xml = XmlHelper.SerializeToXml(dto);
+                var result = await _controller.GetCardRequests();
 
-            Assert.StartsWith("<?xml", xml);
-            Assert.Contains("<CardType>Credit</CardType>", xml);
+                if (testCase.ExpectSuccess)
+                {
+                    var okResult = Assert.IsType<OkObjectResult>(result);
+                    var data = Assert.IsAssignableFrom<IDataResult<List<CardRequestDto>>>(okResult.Value);
+                    Assert.True(data.Success);
+
+                    if (testCase.ExpectEmpty)
+                        Assert.Empty(data.Data);
+                    else
+                        Assert.NotEmpty(data.Data);
+                }
+                else
+                {
+                    var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+                    var data = Assert.IsAssignableFrom<ErrorDataResult<List<CardRequestDto>>>(badRequest.Value);
+                    Assert.False(data.Success);
+                    Assert.Equal(testCase.ErrorMessage, data.Message);
+                }
+            }
         }
 
 

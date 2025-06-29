@@ -49,7 +49,7 @@ namespace Bank.XMLWebApi.Controllers
         [HttpGet("getbranches")]
         public async Task<IActionResult> GetBranchesAsXml()
         {
-            var result = await _branchService.GetAll(); // Tüm branch'leri al
+            var result = await _branchService.GetAll(); 
 
             if (!result.Success || result.Data == null)
                 return BadRequest(result);
@@ -103,8 +103,7 @@ namespace Bank.XMLWebApi.Controllers
         {
             string xmlString = XmlHelper.SerializeToXml(branch);
 
-            string xsdPath = @"C:\Users\fb_go\source\repos\Bank.XMLWebApi\Bank.XMLWebApi\Schemas\Branch.xsd";
-
+            string xsdPath = Path.Combine(Directory.GetCurrentDirectory(), "Schemas", "Branch.xsd");
 
             bool isValid = XmlValidator.ValidateXml(xmlString, xsdPath, out var errors);
             if (!isValid)
