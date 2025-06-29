@@ -67,8 +67,9 @@
 												</xsl:choose>
 											</td>
 											<td>
-												<xsl:value-of select="timestamp"/>
+												<xsl:value-of select="concat(substring(timestamp,9,2),'.',substring(timestamp,6,2),'.',substring(timestamp,1,4),' ',substring(timestamp,12,5))"/>
 											</td>
+
 										</tr>
 									</xsl:for-each>
 								</tbody>
